@@ -31,7 +31,7 @@ The following **additional** features are implemented:
 
 Here's a walkthrough of implemented user stories:
 
-<img src='http://imgur.com/a/w41Al' title='Video Walkthrough' width='' alt='Video Walkthrough' />
+![Video Walkthrough](simpleTodo.gif)
 
 GIF created with [LiceCap](http://www.cockos.com/licecap/).
 
@@ -49,7 +49,7 @@ As part of your pre-work submission, please reflect on the app and answer the fo
 
 ## Notes
 
-Describe any challenges encountered while building the app.
+Instruction was clear and easy to follow. I enjoyed writing the Project Analysis since it gave me the chance to look back and understand the Android library deeper. It took me relatively long time to create the video walkthrough.  
 
 ## License
 
