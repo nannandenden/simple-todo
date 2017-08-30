@@ -12,7 +12,6 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import nl.qbusict.cupboard.QueryResultIterable;
 
@@ -25,9 +24,8 @@ public class MainActivity extends AppCompatActivity {
     static SQLiteDatabase db;
 
     ListView lvItems;
-    ArrayList<String> itemNames;
     ArrayList<Item> items;
-    ArrayAdapter<String> itemsAdapter;
+    ArrayAdapter<Item> itemsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,15 +33,15 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         lvItems = (ListView) findViewById(R.id.lvItems);
-        itemNames = new ArrayList<>();
+        items = new ArrayList<>();
 
         DatabaseHelper dbHelper = new DatabaseHelper(this);
         db = dbHelper.getWritableDatabase();
 
-        itemNames = getAllItems();
-
-        itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, itemNames);
+        items = getAllItems();
+        itemsAdapter = new ItemAdapter(this, items);
         lvItems.setAdapter(itemsAdapter);
+
         setupListViewListener();
     }
 
@@ -58,7 +56,6 @@ public class MainActivity extends AppCompatActivity {
                 Item item = items.get(position);
                 item.setItemName(updateItem);
                 cupboard().withDatabase(db).put(item);
-                itemNames.set(position, updateItem);
                 itemsAdapter.notifyDataSetChanged();
             }
         }
@@ -70,8 +67,7 @@ public class MainActivity extends AppCompatActivity {
         if (!itemText.isEmpty()) {
             Item item = new Item(itemText);
             cupboard().withDatabase(db).put(item);
-            items.add(item);
-            itemsAdapter.add(itemText);
+            itemsAdapter.add(item);
             itemsAdapter.notifyDataSetChanged();
             etNewItem.setText("");
         } else {
@@ -86,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
                 Item item = items.get(pos);
                 cupboard().withDatabase(db).delete(Item.class, item.get_id());
                 items.remove(pos);
-                itemNames.remove(pos);
                 itemsAdapter.notifyDataSetChanged();
                 return true;
             }
@@ -95,31 +90,24 @@ public class MainActivity extends AppCompatActivity {
         lvItems.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String currentItem = itemNames.get(i);
+                Item currentItem = items.get(i);
                 Intent editItemIntent = new Intent(MainActivity.this, EditItemActivity.class);
-                editItemIntent.putExtra("EDIT_ITEM", currentItem);
+                editItemIntent.putExtra("EDIT_ITEM", currentItem.getItemName());
                 editItemIntent.putExtra("EDIT_ITEM_POSITION", i);
                 startActivityForResult(editItemIntent, EDIT_TEXT_REQUEST);
             }
         });
     }
 
-    private static List<Item> getListFromQueryResultIterator(QueryResultIterable<Item> iter) {
-        final List<Item> itemList = new ArrayList<>();
-        for (Item item : iter) {
+    private ArrayList<Item> getAllItems() {
+        final QueryResultIterable<Item> itemIterable = cupboard().withDatabase(db).query(Item
+                .class).query();
+        final ArrayList<Item> itemList = new ArrayList<>();
+        for (Item item : itemIterable) {
             itemList.add(item);
         }
-        iter.close();
+        itemIterable.close();
 
         return itemList;
-    }
-
-    private ArrayList<String> getAllItems() {
-        final QueryResultIterable<Item> iter = cupboard().withDatabase(db).query(Item.class).query();
-        items = (ArrayList<Item>) getListFromQueryResultIterator(iter);
-        for (Item item : items) {
-            itemNames.add(item.getItemName());
-        }
-        return itemNames;
     }
 }

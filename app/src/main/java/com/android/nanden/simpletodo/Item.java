@@ -5,6 +5,10 @@ public class Item {
     public Long _id;
     public String itemName;
 
+    public Item() {
+        this.itemName = null;
+    }
+
     public Item(String itemName) {
         this.itemName = itemName;
     }
