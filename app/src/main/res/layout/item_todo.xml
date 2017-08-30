@@ -5,15 +5,33 @@
     android:layout_height="match_parent"
     android:padding="10dp">
 
+    <ImageView
+        android:id="@+id/ivDateIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="bottom"
+        android:src="@mipmap/ic_date_range_black_24dp"/>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/ivDateIcon"
+        android:layout_alignBaseline="@+id/tvItem"
+        android:text="Mar 15"
+        android:inputType="date"/>
+
     <TextView
         android:id="@+id/tvItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_vertical"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
+        android:layout_toRightOf="@+id/tvDate"
         android:text="To do item"
+        android:gravity="bottom"
         android:textAppearance="?android:attr/textAppearanceLarge" />
+
 
 
 </RelativeLayout>
